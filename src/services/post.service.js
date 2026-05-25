@@ -98,6 +98,12 @@ const createPost = async (userId, { content = '', privacy = 'public', location =
     User.findByIdAndUpdate(userId, { $inc: { postCount: 1 } })
   ]);
 
+  // Trigger AI moderation async (fire-and-forget, không block response)
+  if (content && content.trim()) {
+    const { addModerationJob } = require('../queues/ai-moderation.queue');
+    addModerationJob(post._id.toString(), content).catch(() => {});
+  }
+
   return post.populate('author', 'username fullName avatar isVerified');
 };
 

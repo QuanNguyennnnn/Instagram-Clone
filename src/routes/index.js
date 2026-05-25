@@ -11,7 +11,6 @@ router.use('/search', require('./search.routes'));
 router.use('/reports', require('./report.routes'));
 router.use('/ai', require('./ai.routes'));
 
-// Sẽ bổ sung
-// router.use('/admin', require('./admin.routes'));
+router.use('/admin', require('./admin.routes'));
 
 module.exports = router;
