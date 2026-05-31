@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+:root {
+  --ig-blue: #0095f6;
+  --ig-border: #dbdbdb;
+  --ig-text: #262626;
+  --ig-secondary: #8e8e8e;
+  --ig-bg: #fafafa;
+  --ig-white: #ffffff;
+  --ig-error: #ed4956;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--ig-bg);
+  color: var(--ig-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+input, textarea, button {
+  font-family: inherit;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--ig-border); border-radius: 2px; }
+
+/* Hide scrollbar but keep scroll */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
