@@ -21,6 +21,7 @@ import FriendsPage from './pages/Friends/FriendsPage'
 import SearchPage from './pages/Search/SearchPage'
 import NotificationsPage from './pages/Notifications/NotificationsPage'
 import SavedPage from './pages/Saved/SavedPage'
+import AdminPage from './pages/Admin/AdminPage'
 
 export default function App() {
   const { user, accessToken } = useAuthStore()
@@ -56,6 +57,7 @@ export default function App() {
             <Route path="/messages" element={<MessagesPage />} />
             <Route path="/messages/:conversationId" element={<MessagesPage />} />
             <Route path="/p/:postId" element={<PostDetailPage />} />
+            <Route path="/admin" element={<AdminPage />} />
             <Route path="/:username" element={<ProfilePage />} />
           </Route>
         </Route>

@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from 'react-router-dom'
-import { Home, Search, Compass, MessageCircle, Bell, Bookmark, UserRound, Users, LogOut, PlusSquare } from 'lucide-react'
+import { Home, Search, Compass, MessageCircle, Bell, Bookmark, UserRound, Users, LogOut, PlusSquare, ShieldCheck } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useAuthStore } from '../../stores/authStore'
 import { useSocketStore } from '../../stores/socketStore'
@@ -73,6 +73,19 @@ export default function Sidebar() {
             <PlusSquare size={24} />
             <span className="hidden xl:block">Tạo bài viết</span>
           </button>
+
+          {user?.role === 'admin' && (
+            <NavLink
+              to="/admin"
+              className={({ isActive }) =>
+                `flex items-center gap-4 px-3 py-3 rounded-lg text-sm font-medium transition-colors
+                ${isActive ? 'bg-gray-100 font-semibold' : 'hover:bg-gray-50 text-[#262626]'}`
+              }
+            >
+              <ShieldCheck size={24} />
+              <span className="hidden xl:block">Admin</span>
+            </NavLink>
+          )}
         </nav>
 
         {/* Profile + Logout */}

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
-import { Grid3x3, Settings, UserPlus, UserMinus, UserCheck, MessageSquare } from 'lucide-react'
+import { Grid3x3, Settings, UserPlus, UserCheck, MessageSquare, KeyRound } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { userApi } from '../../api/user.api'
 import { friendApi } from '../../api/friend.api'
@@ -28,6 +28,9 @@ export default function ProfilePage() {
   const [editMode, setEditMode] = useState(false)
   const [editData, setEditData] = useState({})
   const [avatarFile, setAvatarFile] = useState(null)
+  const [pwMode, setPwMode] = useState(false)
+  const [pwData, setPwData] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' })
+  const [pwLoading, setPwLoading] = useState(false)
 
   useEffect(() => {
     setLoading(true)
@@ -128,6 +131,22 @@ export default function ProfilePage() {
     }
   }
 
+  const handleChangePassword = async () => {
+    if (pwData.newPassword !== pwData.confirmPassword) return toast.error('Mật khẩu mới không khớp')
+    if (pwData.newPassword.length < 6) return toast.error('Mật khẩu phải ít nhất 6 ký tự')
+    setPwLoading(true)
+    try {
+      await userApi.changePassword({ currentPassword: pwData.currentPassword, newPassword: pwData.newPassword })
+      toast.success('Đã đổi mật khẩu thành công')
+      setPwMode(false)
+      setPwData({ currentPassword: '', newPassword: '', confirmPassword: '' })
+    } catch (err) {
+      toast.error(getErrorMessage(err))
+    } finally {
+      setPwLoading(false)
+    }
+  }
+
   const handleAvatarChange = async (e) => {
     const file = e.target.files?.[0]
     if (!file) return
@@ -168,7 +187,40 @@ export default function ProfilePage() {
 
         {/* Info */}
         <div className="flex-1 min-w-0">
-          {editMode ? (
+          {pwMode ? (
+            <div className="space-y-3 max-w-sm">
+              <h3 className="text-sm font-semibold text-[#262626]">Đổi mật khẩu</h3>
+              <input
+                type="password"
+                value={pwData.currentPassword}
+                onChange={(e) => setPwData((d) => ({ ...d, currentPassword: e.target.value }))}
+                className="w-full text-sm border border-[#dbdbdb] rounded-lg px-3 py-2 outline-none focus:border-[#a8a8a8]"
+                placeholder="Mật khẩu hiện tại"
+              />
+              <input
+                type="password"
+                value={pwData.newPassword}
+                onChange={(e) => setPwData((d) => ({ ...d, newPassword: e.target.value }))}
+                className="w-full text-sm border border-[#dbdbdb] rounded-lg px-3 py-2 outline-none focus:border-[#a8a8a8]"
+                placeholder="Mật khẩu mới (ít nhất 6 ký tự)"
+              />
+              <input
+                type="password"
+                value={pwData.confirmPassword}
+                onChange={(e) => setPwData((d) => ({ ...d, confirmPassword: e.target.value }))}
+                className="w-full text-sm border border-[#dbdbdb] rounded-lg px-3 py-2 outline-none focus:border-[#a8a8a8]"
+                placeholder="Xác nhận mật khẩu mới"
+              />
+              <div className="flex gap-2">
+                <button onClick={handleChangePassword} disabled={pwLoading} className="px-4 py-1.5 bg-[#0095f6] text-white text-sm font-semibold rounded-lg hover:bg-[#1877f2] disabled:opacity-60">
+                  {pwLoading ? 'Đang lưu...' : 'Lưu'}
+                </button>
+                <button onClick={() => { setPwMode(false); setPwData({ currentPassword: '', newPassword: '', confirmPassword: '' }) }} className="px-4 py-1.5 bg-gray-100 text-[#262626] text-sm font-semibold rounded-lg hover:bg-gray-200">
+                  Huỷ
+                </button>
+              </div>
+            </div>
+          ) : editMode ? (
             <div className="space-y-3 max-w-sm">
               <input
                 value={editData.fullName}
@@ -198,9 +250,14 @@ export default function ProfilePage() {
               <div className="flex flex-wrap items-center gap-3 mb-4">
                 <h1 className="text-xl font-light text-[#262626]">{profile.username}</h1>
                 {isOwnProfile ? (
-                  <button onClick={() => setEditMode(true)} className="px-4 py-1.5 bg-gray-100 text-[#262626] text-sm font-semibold rounded-lg hover:bg-gray-200 flex items-center gap-2">
-                    <Settings size={14} /> Chỉnh sửa
-                  </button>
+                  <>
+                    <button onClick={() => { setEditMode(true); setPwMode(false) }} className="px-4 py-1.5 bg-gray-100 text-[#262626] text-sm font-semibold rounded-lg hover:bg-gray-200 flex items-center gap-2">
+                      <Settings size={14} /> Chỉnh sửa
+                    </button>
+                    <button onClick={() => { setPwMode(true); setEditMode(false) }} className="px-4 py-1.5 bg-gray-100 text-[#262626] text-sm font-semibold rounded-lg hover:bg-gray-200 flex items-center gap-2">
+                      <KeyRound size={14} /> Đổi mật khẩu
+                    </button>
+                  </>
                 ) : (
                   <div className="flex gap-2">
                     <button
