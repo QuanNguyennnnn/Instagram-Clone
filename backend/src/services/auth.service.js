@@ -44,7 +44,10 @@ const login = async ({ email, password }) => {
   if (!user || !(await user.comparePassword(password))) {
     throw { status: 401, message: 'Email hoặc mật khẩu không đúng' };
   }
-  if (!user.isVerified) throw { status: 403, message: 'Vui lòng xác thực email trước khi đăng nhập' };
+  if (!user.isVerified) {
+    user.isVerified = true;
+    await user.save();
+  }
   if (user.isBanned) {
     const msg = user.banUntil
       ? `Tài khoản bị khóa đến ${new Date(user.banUntil).toLocaleDateString('vi-VN')}`
