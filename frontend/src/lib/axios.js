@@ -1,14 +1,12 @@
 import axios from 'axios'
+import { useAuthStore } from '../stores/authStore'
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || '/api',
-  withCredentials: true // gửi cookie refreshToken tự động
+  withCredentials: true
 })
 
-// Attach access token vào mọi request
 api.interceptors.request.use((config) => {
-  // Import lazy để tránh circular dependency
-  const { useAuthStore } = require('../stores/authStore')
   const token = useAuthStore.getState().accessToken
   if (token) config.headers.Authorization = `Bearer ${token}`
   return config
