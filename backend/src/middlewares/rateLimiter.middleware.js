@@ -5,7 +5,8 @@ const authLimiter = rateLimit({
   max: 50,
   message: { success: false, message: 'Quá nhiều yêu cầu, vui lòng thử lại sau 15 phút' },
   standardHeaders: true,
-  legacyHeaders: false
+  legacyHeaders: false,
+  validate: { xForwardedForHeader: false }
 });
 
 const apiLimiter = rateLimit({
@@ -13,7 +14,8 @@ const apiLimiter = rateLimit({
   max: 200,
   message: { success: false, message: 'Quá nhiều yêu cầu, vui lòng thử lại sau' },
   standardHeaders: true,
-  legacyHeaders: false
+  legacyHeaders: false,
+  validate: { xForwardedForHeader: false }
 });
 
 const uploadLimiter = rateLimit({
@@ -21,7 +23,8 @@ const uploadLimiter = rateLimit({
   max: 30,
   message: { success: false, message: 'Giới hạn upload đã đạt, thử lại sau 1 giờ' },
   standardHeaders: true,
-  legacyHeaders: false
+  legacyHeaders: false,
+  validate: { xForwardedForHeader: false }
 });
 
 module.exports = { authLimiter, apiLimiter, uploadLimiter };
